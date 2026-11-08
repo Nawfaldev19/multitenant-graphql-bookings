@@ -1,0 +1,23 @@
+.DS_Store
+.env
+.env.*
+!.env.example
+
+# server
+server/.bundle/
+server/vendor/bundle/
+server/log/*
+server/tmp/*
+server/storage/*
+!server/log/.keep
+!server/tmp/.keep
+!server/storage/.keep
+server/coverage/
+
+# client
+client/node_modules/
+client/dist/
+client/coverage/
+client/.pw-browsers/
+client/playwright-report/
+client/test-results/
