@@ -1,0 +1,6 @@
+vendor/bundle
+.bundle
+storage/*.sqlite3*
+tmp
+log
+coverage

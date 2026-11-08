@@ -1,0 +1,23 @@
+# Convenience setup for trying the demo without installing Ruby or Node.
+# Runs both apps in development mode; it is not a production deployment.
+services:
+  api:
+    build: ./server
+    ports:
+      - "3000:3000"
+    environment:
+      CORS_ALLOWED_ORIGINS: http://localhost:5173
+    volumes:
+      - api-storage:/app/storage
+
+  web:
+    build: ./client
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_URL: http://localhost:3000/graphql
+    depends_on:
+      - api
+
+volumes:
+  api-storage:
