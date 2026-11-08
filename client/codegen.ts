@@ -4,7 +4,7 @@ import type { CodegenConfig } from "@graphql-codegen/cli";
 // Run `npm run codegen` after changing an operation or the schema.
 const config: CodegenConfig = {
   schema: "../server/schema.graphql",
-  documents: ["src/**/*.{ts,tsx}", "!src/graphql/generated/**"],
+  documents: ["src/**/*.{ts,tsx}", "!src/graphql/generated/**", "!src/**/*.test.{ts,tsx}"],
   ignoreNoDocuments: false,
   generates: {
     "src/graphql/generated/": {
