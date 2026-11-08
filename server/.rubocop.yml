@@ -1,0 +1,43 @@
+plugins:
+  - rubocop-rails
+  - rubocop-minitest
+
+AllCops:
+  TargetRubyVersion: 3.3
+  NewCops: enable
+  SuggestExtensions: false
+  Exclude:
+    - "bin/*"
+    - "db/schema.rb"
+    - "vendor/**/*"
+    - "tmp/**/*"
+
+Style/Documentation:
+  Enabled: false
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+Style/FrozenStringLiteralComment:
+  Enabled: false
+Layout/LineLength:
+  Max: 150
+Metrics/AbcSize:
+  Max: 25
+Metrics/ClassLength:
+  Exclude:
+    - "test/**/*"
+Metrics/BlockLength:
+  Exclude:
+    - "test/**/*"
+    - "db/seeds.rb"
+    - "config/**/*"
+Minitest/MultipleAssertions:
+  Max: 6
+Rails/SkipsModelValidations:
+  Exclude:
+    - "test/**/*"
+Metrics/ParameterLists:
+  CountKeywordArgs: false
+Metrics/MethodLength:
+  Max: 15
+  Exclude:
+    - "db/migrate/*"

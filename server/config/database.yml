@@ -1,0 +1,40 @@
+# SQLite by default, so `bin/dev` needs no database server. Rails 8 opens SQLite
+# transactions in IMMEDIATE mode, so concurrent writers are serialized
+# (docs/DECISIONS.md, ADR-002).
+#
+# Set DATABASE_URL to a postgres:// URL to run on PostgreSQL instead. CI runs
+# the server suite on both, because only PostgreSQL exercises the row locks
+# the booking and cancellation services rely on.
+<% if ENV["DATABASE_URL"].to_s.start_with?("postgres") %>
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS", 5) %>
+  url: <%= ENV["DATABASE_URL"] %>
+
+development:
+  <<: *default
+
+test:
+  <<: *default
+
+production:
+  <<: *default
+<% else %>
+default: &default
+  adapter: sqlite3
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS", 5) %>
+  timeout: 5000
+
+development:
+  <<: *default
+  database: <%= ENV.fetch("DATABASE_PATH", "storage/development.sqlite3") %>
+
+test:
+  <<: *default
+  database: storage/test.sqlite3
+
+production:
+  <<: *default
+  database: <%= ENV.fetch("DATABASE_PATH", "storage/production.sqlite3") %>
+<% end %>
