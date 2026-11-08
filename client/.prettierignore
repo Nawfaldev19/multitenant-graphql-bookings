@@ -1,0 +1,9 @@
+# Installed, generated, or reported output
+node_modules
+dist
+coverage
+.pw-browsers
+playwright-report
+test-results
+src/graphql/generated
+package-lock.json

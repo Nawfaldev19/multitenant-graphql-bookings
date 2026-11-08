@@ -1,0 +1,113 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  server:
+    name: Server (lint, schema, tests)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          working-directory: server
+          bundler-cache: true
+      - name: Lint
+        run: bundle exec rubocop
+      - name: Schema dump is up to date
+        run: bin/rails graphql:dump_schema && git diff --exit-code schema.graphql
+      - name: Tests with coverage
+        run: bin/rails db:prepare && bin/rails test
+        env:
+          RAILS_ENV: test
+
+  server-postgres:
+    name: Server tests on PostgreSQL (row locks)
+    # SQLite serializes every writer, so it cannot show whether the row locks in
+    # the booking and cancellation services work. This job runs the same suite
+    # on PostgreSQL, where the concurrency tests fail if a lock is removed.
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: equipment_bookings
+          POSTGRES_PASSWORD: equipment_bookings
+          POSTGRES_DB: equipment_bookings_test
+        ports:
+          - 5432:5432
+    defaults:
+      run:
+        working-directory: server
+    env:
+      RAILS_ENV: test
+      DATABASE_URL: postgres://equipment_bookings:equipment_bookings@localhost:5432/equipment_bookings_test
+      BUNDLE_WITH: postgres
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          working-directory: server
+          bundler-cache: true
+      - name: Wait for PostgreSQL to accept connections
+        run: for attempt in $(seq 1 30); do pg_isready -h localhost -U equipment_bookings && exit 0; sleep 2; done; exit 1
+      - name: Tests on PostgreSQL
+        run: bin/rails db:prepare && bin/rails test
+
+  client:
+    name: Client (format, lint, types, tests, build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: client
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: client/package-lock.json
+      - run: npm ci
+      - name: Generated GraphQL types are up to date
+        run: npm run codegen && git diff --exit-code src/graphql/generated
+      - run: npm run format:check
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run test:coverage
+      - run: npm run build
+
+  e2e:
+    name: End-to-end (Playwright)
+    runs-on: ubuntu-latest
+    needs: [server, server-postgres, client]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          working-directory: server
+          bundler-cache: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: client/package-lock.json
+      - run: npm ci
+        working-directory: client
+      - run: npx playwright install --with-deps chromium
+        working-directory: client
+      - run: npm run test:e2e
+        working-directory: client
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: client/playwright-report
