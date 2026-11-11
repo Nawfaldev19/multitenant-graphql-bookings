@@ -1,7 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
-const API_PORT = 3100;
-const WEB_PORT = 5174;
+const API_PORT = Number(process.env.E2E_API_PORT ?? 3100);
+const WEB_PORT = Number(process.env.E2E_WEB_PORT ?? 5174);
 
 // Starts both apps against a separate, freshly seeded database (storage/e2e.sqlite3),
 // so end-to-end runs never touch development data.

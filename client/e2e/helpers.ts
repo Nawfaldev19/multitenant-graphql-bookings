@@ -1,6 +1,6 @@
 import { expect, type Page } from "@playwright/test";
 
-export const API_URL = "http://localhost:3100/graphql";
+export const API_URL = `http://localhost:${process.env.E2E_API_PORT ?? 3100}/graphql`;
 export const DEMO_PASSWORD = "equipment-bookings-demo";
 
 export async function signInAs(page: Page, name: string) {
