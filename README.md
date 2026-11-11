@@ -2,6 +2,8 @@
 
 Equipment booking for a network of community makerspaces: members reserve tools without double bookings, and no space can ever see another space's data. Rails 8 GraphQL API with a typed React client.
 
+**Live demo:** TODO: add the URL after deploying (steps in [DEPLOY.md](DEPLOY.md)). Until then, `bin/dev` runs it locally in one command.
+
 [![CI](https://github.com/Nawfaldev19/multitenant-graphql-bookings/actions/workflows/ci.yml/badge.svg)](https://github.com/Nawfaldev19/multitenant-graphql-bookings/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
@@ -51,7 +53,7 @@ Reset the demo data at any time with `cd server && bin/rails db:seed`. Every var
 
 **With Docker instead:** `docker compose up --build`, then open http://localhost:5173.
 
-## Architecture
+## Key decisions and trade-offs
 
 ```mermaid
 graph LR
@@ -124,7 +126,7 @@ npm run test:e2e                  # starts both apps against a separate e2e data
 
 Strategy, the full list of tenant isolation checks, and known gaps: [docs/TESTING.md](docs/TESTING.md).
 
-## Decisions and further docs
+## Decision records and further docs
 
 - [Decision records](docs/DECISIONS.md): nine ADRs, from tenant isolation and SQLite to offset-backed cursors and testing locks on PostgreSQL
 - [Architecture](docs/ARCHITECTURE.md): components, request flow, tenancy model, concurrency, performance
@@ -134,7 +136,7 @@ Strategy, the full list of tenant isolation checks, and known gaps: [docs/TESTIN
 - [References](docs/REFERENCES.md): specifications and sources for the patterns used
 - [Changelog](CHANGELOG.md) and [third-party notices](THIRD_PARTY_NOTICES.md)
 
-## Known limitations and next steps
+## What I would do next
 
 This is a portfolio demo, not a product.
 
@@ -149,7 +151,7 @@ This is a portfolio demo, not a product.
 
 ## Project status
 
-Complete as a portfolio demo (v1.1.0, see the [changelog](CHANGELOG.md)). Not deployed; there is no hosted demo, so run it locally with the quick start above.
+Complete as a portfolio demo (v1.1.0, see the [changelog](CHANGELOG.md)). Not deployed yet; run it locally with the quick start above. A free Render setup is ready in [DEPLOY.md](DEPLOY.md).
 
 <details>
 <summary>Recapturing the screenshot</summary>

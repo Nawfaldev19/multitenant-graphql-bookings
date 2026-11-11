@@ -2,6 +2,14 @@
   "name": "equipment-bookings-client",
   "private": true,
   "version": "1.1.0",
+  "description": "Equipment Bookings client: a typed React and Apollo front end for a multi-tenant booking API.",
+  "author": "Nawfal Imran",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Nawfaldev19/multitenant-graphql-bookings.git",
+    "directory": "client"
+  },
+  "homepage": "https://github.com/Nawfaldev19/multitenant-graphql-bookings#readme",
   "type": "module",
   "license": "MIT",
   "scripts": {
